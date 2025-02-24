@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organized Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6C5C5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .event-list {
+            margin-top: 20px;
+            width: 80%;
+            max-width: 600px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        .event {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            position: relative;
+        }
+        .event:last-child {
+            border-bottom: none;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            position: absolute;
+            right: 10px;
+            top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h2>Organized Events</h2>
+    <div class="event-list" id="event-list">
+        <h3>List of Events</h3>
+        <div id="events-container">
+            <p>No events added yet.</p>
+        </div>
+    </div>
+
+    <script>
+        function loadEvents() {
+            let events = JSON.parse(localStorage.getItem("events")) || [];
+            let eventsContainer = document.getElementById("events-container");
+
+            if (events.length === 0) {
+                eventsContainer.innerHTML = "<p>No events added yet.</p>";
+                return;
+            }
+
+            eventsContainer.innerHTML = ""; // Clear previous content
+
+            events.forEach((event, index) => {
+                let eventItem = document.createElement("div");
+                eventItem.classList.add("event");
+                eventItem.innerHTML = `<strong>${event.name}</strong><br>
+                                       Date: ${event.date}<br>
+                                       Time: ${event.startTime} - ${event.endTime}<br>
+                                       Venue: ${event.venue}<br>
+                                       Description: ${event.description}<br>
+                                       Fee: $${event.fee}
+                                       <button class='delete-btn' onclick='deleteEvent(${index})'>Delete</button>`;
+                eventsContainer.appendChild(eventItem);
+            });
+        }
+
+        function deleteEvent(index) {
+            let events = JSON.parse(localStorage.getItem("events")) || [];
+            events.splice(index, 1); // Remove the selected event
+            localStorage.setItem("events", JSON.stringify(events)); // Update local storage
+            loadEvents(); // Reload the events list
+        }
+
+        document.addEventListener("DOMContentLoaded", loadEvents);
+    </script>
+</body>
+</html>
