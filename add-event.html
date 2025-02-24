@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6C5C5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #edebeb;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            margin-top: 20px;
+        }
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .submit-btn {
+            background-color: black;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>ENTER THE EVENT DETAILS</h3>
+        <form id="event-form">
+            <input type="text" id="event-name" placeholder="Event Name" required>
+            <input type="date" id="event-date" required>
+            <input type="time" id="start-time" required>
+            <p>to</p>
+            <input type="time" id="end-time" required>
+            <input type="text" id="event-venue" placeholder="Venue" required>
+            <input type="text" id="event-description" placeholder="Description" required>
+            <input type="number" id="registration-fee" placeholder="Registration Fee (₹)" required>
+            <button type="submit" class="submit-btn">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function formatTime(time) {
+            let [hour, minute] = time.split(":");
+            hour = parseInt(hour);
+            let ampm = hour >= 12 ? "PM" : "AM";
+            hour = hour % 12 || 12;
+            return `${hour}:${minute} ${ampm}`;
+        }
+
+        document.getElementById("event-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let eventName = document.getElementById("event-name").value;
+            let eventDate = document.getElementById("event-date").value;
+            let startTime = formatTime(document.getElementById("start-time").value);
+            let endTime = formatTime(document.getElementById("end-time").value);
+            let eventVenue = document.getElementById("event-venue").value;
+            let eventDescription = document.getElementById("event-description").value;
+            let registrationFee = document.getElementById("registration-fee").value;
+            
+            let formattedFee = `₹${registrationFee}`;
+
+            let newEvent = {
+                name: eventName,
+                date: eventDate,
+                startTime: startTime,
+                endTime: endTime,
+                venue: eventVenue,
+                description: eventDescription,
+                fee: formattedFee
+            };
+
+            let events = JSON.parse(localStorage.getItem("events")) || [];
+            events.push(newEvent);
+            localStorage.setItem("events", JSON.stringify(events));
+
+            alert("Event added successfully!");
+            document.getElementById("event-form").reset(); // Clear form fields
+        });
+    </script>
+</body>
+</html>
